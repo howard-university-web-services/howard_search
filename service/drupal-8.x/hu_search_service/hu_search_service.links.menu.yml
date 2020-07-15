@@ -1,0 +1,5 @@
+hu_search_service.admin:
+  title: 'Howard University Search Settings'
+  description: 'Howard University Search Administrator Settings'
+  parent: system.admin_config_search
+  route_name: hu_search_service.settings

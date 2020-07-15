@@ -1,0 +1,19 @@
+hu_search_service.search:
+  path: '/howard/search'
+  defaults:
+    _controller: '\Drupal\hu_search_service\Controller\SearchController::search'
+  methods:
+    - 'GET'
+  requirements:
+    _permission: 'access hu_search_service'
+  options:
+    _auth:
+      - 'basic_auth'
+
+hu_search_service.settings:
+  path: '/admin/config/search/howard'
+  defaults:
+    _form: '\Drupal\hu_search_service\Form\ConfigurationSettingsForm'
+    _title: 'Howard University Search Settings'
+  requirements:
+    _permission: 'administer hu_search_service'

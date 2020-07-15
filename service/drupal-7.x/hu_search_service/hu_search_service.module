@@ -1,0 +1,164 @@
+<?php
+
+/**
+ * Settings key for Solr index reference.
+ */
+const FORM_SOLR_INDEX_KEY = 'hu_search_service_solr_index';
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function *
+ * @return string
+ */
+function hu_search_service_help($path, $arg)
+{
+    switch ($path) {
+        case "admin/help#hu_search_service":
+            return t("Exposes a Solr server index as a Drupal REST API for cross platform integration.");
+    }
+}
+
+/**
+ * Implements hook_permissions().
+ *
+ * Enables module security settings.
+ */
+function hu_search_service_permission()
+{
+    return array(
+        'HU Search Service Permissions' => array(
+            'title' => t('Howard University Search Service'),
+            'description' => t('Administer settings for the HU Search Service module.'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function hu_search_service_menu()
+{
+    $items = [];
+    $items['admin/config/search/hu_search_service'] = array(
+        'title' => 'Howard University Search Service',
+        'description' => 'Configure the HU Search Service module.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('hu_search_service_form'),
+        'access arguments' => array('HU Search Service Permissions'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+/**
+ * Implementation of hook_form().
+ *
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function hu_search_service_form($form, &$form_state)
+{
+    $form[FORM_SOLR_INDEX_KEY] = array(
+        '#type' => 'textfield',
+        '#title' => t('Solr Index Name'),
+        '#default_value' => variable_get(FORM_SOLR_INDEX_KEY),
+        '#size' => 50,
+        '#description' => t('Solr index name to reference.'),
+        '#required' => TRUE,
+    );
+
+    return system_settings_form($form);
+}
+
+/**
+ * Implementation of hook_services_resources().
+ * 
+ * Documentation
+ * https://www.drupal.org/node/783460
+ */
+function hu_search_service_services_resources()
+{
+    return array(
+        'search' => array(
+            'index' => array(
+                'help' => 'Queries against a configured index.',
+                'file' => array('file' => 'inc', 'module' => 'hu_search_service'),
+                'callback' => 'api_get_query_results',
+                'access callback' => 'api_query_result_access',
+                'access arguments' => array('search', 'access content'),
+                'access arguments append' => FALSE,
+                'args' => array(
+                    array(
+                        'name' => 'query',
+                        'type' => 'string',
+                        'description' => 'Query text to search against.',
+                        'source' => array('param' => 'query'),
+                        'optional' => TRUE,
+                    ),
+                ),
+            ),
+        ),
+    );
+}
+
+/**
+ * Implementation of hook_search_api_solr_query_alter().
+ *
+ * @param $call_args
+ * @param SearchApiQueryInterface $query
+ */
+function hu_search_service_search_api_solr_query_alter($call_args, SearchApiQueryInterface $query)
+{
+    $call_args['params']['fl'] = '*, score';
+}
+
+/**
+ * Queries a Search API Solr index with the given query text.
+ *
+ * @param $queryText
+ * @return array
+ */
+function get_index_query_results($queryText)
+{
+	// Load index.
+    $indexId = variable_get(FORM_SOLR_INDEX_KEY);
+    $index = search_api_index_load($indexId);
+    $query = $index->query();
+
+    // Set fulltext search keywords and fields.
+    $query->keys($queryText);
+
+    // Set additional conditions.
+    //TODO: Fix query filter - $query->condition('status', 1);
+
+    // Do paging.
+    $query->range(0, 1000);
+
+    // Add sorting.
+    $query->sort('search_api_relevance', 'DESC');
+
+    // Execute the search.
+    $results = $query->execute();
+
+    $response = array();
+    foreach ($results['results'] as $result)
+    {
+        $resultItem = new ResultItem();
+        $resultItem->id = $result['id'];
+        $resultItem->title = $result['fields']['title'][0];
+        $resultItem->summary = $result['fields']['body:value'][0];
+        $resultItem->url = $GLOBALS['base_url'] . '/node/' . $result['id'];
+        $resultItem->score = $result['score'];
+        $response[] = $resultItem;
+    }
+
+    return $response;
+}

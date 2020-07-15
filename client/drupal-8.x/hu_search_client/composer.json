@@ -1,0 +1,18 @@
+{
+    "name": "howard/hu_search_client",
+    "description": "Provides cross-website search functionality for Howard Univerity websites.",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "Antonio McMichael",
+            "email": "antonio.mcmichael@howard.edu",
+            "role": "Maintainer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "drupal/acquia_connector": "^1.12",
+        "drupal/search_api": "^1.8",
+        "drupal/search_api_solr": "^1.2"
+    }
+}

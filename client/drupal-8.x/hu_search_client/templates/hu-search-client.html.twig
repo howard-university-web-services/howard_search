@@ -1,0 +1,67 @@
+{{ attach_library('hu_search_client/styling') }}
+
+<div id="howard-search-client">
+    {% if show_title %}
+    <h2>{{ title }}</h2>
+	{% endif %}
+
+    <!-- Search Form -->
+    <form action="/search/howard" method="GET">
+		<div class="form-row">
+			<div class="col-10">
+				<input class="form-control" type="text" name="q" value="{{ query }}"/>
+			</div>
+			<div class="col">
+				<input class="form-control hu-btn" type="submit" value="Search" />
+			</div>
+		</div>
+    </form>
+
+    <!-- Category Tabs -->
+
+    {% if categories %}
+	<ul class="nav nav-tabs categories">
+	{% for category in categories %}
+		<li class="nav-item">
+			<a class="nav-link {% if category.is_current_result_set %}active{% endif %}"href="/search/howard?q={{ query }}&i={{ category.indexes }}">{{ category.name }} ({{ category.result_count }})</a>
+		</li>
+	{% endfor %}
+	</ul>
+    {% endif %}
+
+    <!-- Search Results -->
+    {% if results %}
+		<div class="display-info">
+			Displaying {{ display_info.first_page_result_number }}-{{ display_info.last_page_result_number }} of {{ display_info.total_results }} results.
+		</div>
+
+        <div class="search-results">
+		{% for result in results %}
+			<div class="card">
+			  <div class="card-body">
+				<h3 class="card-title">{{ result.title }}</h5>
+				<h4 class="card-subtitle mb-2 text-muted">{{ result.content_type }}</h6>
+				<p class="card-text">{{ result.description | raw }}</p>
+				<a class="btn btn-primary" href="{{ result.url }}" class="card-link">View More</a>
+			  </div>
+			</div>
+		{% endfor %}
+		</div>
+
+        {% if page_info %}
+		<ul class="pagination page-info">
+		{% for page in page_info %}
+			<li class="page-item {% if page.is_current_page %}active{% endif %}">
+				<a class="page-link" href="/search/howard?q={{ query }}&i={{ page.current_indexes }}&p={{ page.number }}">{{ page.number }}</a>
+			</li>
+		{% endfor %}
+		</ul>
+        {% endif %}
+	{% else %}
+		<div class="container" style="text-align:center">
+			<br/><br/>
+			<h3>No results.</h3>
+			<br/>
+		</div>
+    {% endif %}
+</div>

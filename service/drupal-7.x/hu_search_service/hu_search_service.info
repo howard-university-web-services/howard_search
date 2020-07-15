@@ -1,0 +1,14 @@
+name = Howard University Search Service
+description = Provides cross-website search functionality for Howard University websites.
+core = 7.x
+package = Search
+
+configure = admin/config/search/hu_search_service
+
+dependencies[] = search_api
+dependencies[] = services
+dependencies[] = libraries
+dependencies[] = rest_server
+dependencies[] = services_basic_auth
+
+files[] = hu_search_service.inc

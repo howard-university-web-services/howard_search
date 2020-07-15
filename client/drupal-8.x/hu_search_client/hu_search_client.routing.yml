@@ -1,0 +1,15 @@
+hu_search_client.search:
+  path: '/search/howard'
+  defaults:
+    _controller: '\Drupal\hu_search_client\Controller\SearchController::search'
+    _title: 'Howard University Search'
+  requirements:
+    _permission: 'access howard_search_client'
+
+hu_search_client.settings:
+  path: '/admin/config/search/howard'
+  defaults:
+    _form: '\Drupal\hu_search_client\Form\ConfigurationSettingsForm'
+    _title: 'Howard University Search Settings'
+  requirements:
+    _permission: 'administer howard_search_client'

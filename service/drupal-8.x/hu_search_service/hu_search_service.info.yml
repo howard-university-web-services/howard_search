@@ -1,0 +1,15 @@
+name: Howard University Search Service
+description: Provides cross-website search functionality for Howard University websites.
+package: Search
+
+type: module
+core: 8.x
+
+configure: hu_search_service.settings
+
+dependencies:
+# TODO: Only needed when hosted in Acquia.
+# - drupal:acquia_connector
+  - drupal:search_api
+  - drupal:search_api_solr
+  - drupal:basic_auth

@@ -1,0 +1,42 @@
+#howard-search-client {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+}
+
+#howard-search-client h2 {
+    font-size: 25px;
+    color: #E51937;
+}
+
+#howard-search-client .hu-btn {
+    color: #ffffff;
+    background-color: #003A63;
+    border: none;
+    -webkit-transition: background-color 300ms; /* Safari */
+    transition: background-color 300ms;
+}
+
+#howard-search-client .hu-btn:hover {
+    background-color: #2A6EBB;
+}
+
+#howard-search-client .categories {
+    margin: 15px 0px;
+}
+
+#howard-search-client .categories .nav-link {
+}
+
+#howard-search-client .categories .nav-link.active {
+}
+
+#howard-search-client .search-results {
+    box-sizing: border-box;
+}
+
+#howard-search-client .search-results .card {
+    margin: 15px 0px;
+}
+
+#howard-search-client .search-results .card-title {
+    font-weight: bold;
+}
