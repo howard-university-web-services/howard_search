@@ -15,15 +15,11 @@ function api_get_query_results($query)
 /**
  * Permissions callback method for additional extensibility.
  *
- * @param array $op
- * @param array $args
- *
  * @return boolean
- *
  */
-function api_query_result_access($op, $args)
+function api_query_result_access()
 {
-    return user_access($args[1]);
+    return user_access('Access Howard University Search');
 }
 
 /**

@@ -32,9 +32,13 @@ function hu_search_service_help($path, $arg)
 function hu_search_service_permission()
 {
     return array(
-        'HU Search Service Permissions' => array(
-            'title' => t('Howard University Search Service'),
+        'Administer Howard University Search' => array(
+            'title' => t('Administer Howard University Search'),
             'description' => t('Administer settings for the HU Search Service module.'),
+        ),
+        'Access Howard University Search' => array(
+            'title' => t('Access Howard University Search'),
+            'description' => t('Enables access to the Howard University Search REST API.'),
         ),
     );
 }
@@ -50,7 +54,7 @@ function hu_search_service_menu()
         'description' => 'Configure the HU Search Service module.',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('hu_search_service_form'),
-        'access arguments' => array('HU Search Service Permissions'),
+        'access arguments' => array('Administer Howard University Search'),
         'type' => MENU_NORMAL_ITEM,
     );
 
@@ -80,7 +84,7 @@ function hu_search_service_form($form, &$form_state)
 
 /**
  * Implementation of hook_services_resources().
- * 
+ *
  * Documentation
  * https://www.drupal.org/node/783460
  */
@@ -93,8 +97,6 @@ function hu_search_service_services_resources()
                 'file' => array('file' => 'inc', 'module' => 'hu_search_service'),
                 'callback' => 'api_get_query_results',
                 'access callback' => 'api_query_result_access',
-                'access arguments' => array('search', 'access content'),
-                'access arguments append' => FALSE,
                 'args' => array(
                     array(
                         'name' => 'query',
@@ -128,7 +130,7 @@ function hu_search_service_search_api_solr_query_alter($call_args, SearchApiQuer
  */
 function get_index_query_results($queryText)
 {
-	// Load index.
+    // Load index.
     $indexId = variable_get(FORM_SOLR_INDEX_KEY);
     $index = search_api_index_load($indexId);
     $query = $index->query();
