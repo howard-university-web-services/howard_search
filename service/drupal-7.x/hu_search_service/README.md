@@ -1,0 +1,1 @@
+[Configuring Multiple Cores](https://docs.acquia.com/acquia-search/multiple-cores/override)
